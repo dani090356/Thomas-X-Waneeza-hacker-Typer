@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacker Typer Clone</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Hacker background effect (falling green code) */
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.15;
+        }
+        
+        #terminal {
+            padding: 20px;
+            height: 100vh;
+            overflow: auto;
+            white-space: pre;
+            line-height: 1.3;
+            font-size: 16px;
+        }
+        
+        #header {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #0f0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        #instructions {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            color: #0f0;
+            font-size: 14px;
+        }
+        
+        /* Contact Button */
+        #contact-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: #0f0;
+            color: #000;
+            border: none;
+            padding: 10px 15px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 3px;
+            z-index: 1000;
+        }
+        
+        #contact-btn:hover {
+            background-color: #0c0;
+        }
+        
+        #contact-number {
+            display: none;
+            position: fixed;
+            bottom: 60px;
+            left: 20px;
+            background-color: #000;
+            color: #0f0;
+            padding: 10px;
+            border: 1px solid #0f0;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hacker Background Effect -->
+    <canvas id="matrix-bg"></canvas>
+    
+    <div id="terminal">
+        <div id="header">Welcome To Thomas XD X Waneeza Hacker Typer</div>
+        <div id="content"></div>
+    </div>
+    
+    <!-- Contact Button -->
+    <button id="contact-btn">CONTACT</button>
+    <div id="contact-number">+923468927192</div>
+    
+    <div id="instructions">Start typing to see hacker code...</div>
+
+    <script>
+        // ===== HACKER BACKGROUND (Matrix Effect) =====
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+        
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+        
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = "#0f0";
+            ctx.font = fontSize + "px monospace";
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        
+        setInterval(drawMatrix, 33);
+        
+        // ===== HACKER TYPER FUNCTIONALITY =====
+        const codeSamples = [
+            "// Initializing system protocols...\nconst system = require('secure-os');\n\nfunction bypassSecurity() {\n  let firewall = system.getFirewallStatus();\n  if (firewall === 'active') {\n    console.log('Firewall detected. Initiating bypass sequence...');\n    system.injectPayload(0x45FA2C);\n  }\n}\n\n// Establishing connection...",
+            "#include <stdio.h>\n\nint main() {\n  printf(\"Accessing mainframe...\\n\");\n  \n  // Buffer overflow exploit\n  char buffer[10];\n  strcpy(buffer, \"EXPLOIT\");\n  \n  return 0;\n}",
+            "import socket\n\n# Creating backdoor\ns = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\ns.bind(('0.0.0.0', 31337))\ns.listen(1)\n\nwhile True:\n    conn, addr = s.accept()\n    data = conn.recv(1024)\n    if not data: break\n    conn.sendall(b'Access granted\\n')"
+        ];
+
+        let currentPosition = 0;
+        let currentSample = 0;
+        const contentElement = document.getElementById('content');
+        const fullCode = codeSamples.join('\n\n// ===== NEW SESSION =====\n\n');
+        
+        // Listen for keyboard events
+        document.addEventListener('keydown', function(e) {
+            // Add 3-10 characters each keypress to make it look faster
+            const charsToAdd = Math.floor(Math.random() * 8) + 3;
+            const newText = fullCode.substring(currentPosition, currentPosition + charsToAdd);
+            
+            contentElement.textContent += newText;
+            currentPosition += charsToAdd;
+            
+            // Scroll to bottom
+            document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
+            
+            // If we reach end of code, start from beginning
+            if (currentPosition >= fullCode.length) {
+                currentPosition = 0;
+                contentElement.textContent += '\n\n// ===== NEW SESSION =====\n\n';
+            }
+            
+            // Prevent default for some keys
+            if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Space') {
+                e.preventDefault();
+            }
+        });
+        
+        // Blinking cursor effect
+        setInterval(() => {
+            document.title = document.title.endsWith('_') ? 
+                'Hacker Typer Clone' : 
+                'Hacker Typer Clone_';
+        }, 500);
+        
+        // ===== CONTACT BUTTON FUNCTIONALITY =====
+        const contactBtn = document.getElementById('contact-btn');
+        const contactNumber = document.getElementById('contact-number');
+        
+        contactBtn.addEventListener('click', () => {
+            if (contactNumber.style.display === 'block') {
+                contactNumber.style.display = 'none';
+            } else {
+                contactNumber.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
